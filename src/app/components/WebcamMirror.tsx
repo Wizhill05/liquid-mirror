@@ -13,17 +13,24 @@ const WorkingWebcamWarp = () => {
   const startWebcam = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "user", width: 640, height: 320 }, // Doubled resolution
+        video: { facingMode: "user", width: 640, height: 320 },
       });
 
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         videoRef.current.onloadedmetadata = () => {
-          startWarpingLoop();
+          videoRef.current
+            .play()
+            .then(() => {
+              console.log("Video playback started");
+              startWarpingLoop();
+            })
+            .catch((err) => console.error("Error playing video:", err));
         };
       }
     } catch (err) {
       console.error("Error accessing webcam:", err);
+      alert("Could not access webcam. Check permissions and try again.");
     }
   };
 
@@ -200,7 +207,7 @@ const WorkingWebcamWarp = () => {
     }
 
     // Apply contrast adjustment
-    const contrastedImageData = adjustContrast(targetImageData, 30); // Adjust the value (e.g., 0-100) for more/less contrast
+    const contrastedImageData = adjustContrast(targetImageData, 40); // Adjust the value (e.g., 0-100) for more/less contrast
 
     // Apply saturation reduction
     const desaturatedImageData = adjustSaturation(contrastedImageData, 0.7); // 0.6 means 60% saturation (reduce from full color)
@@ -382,25 +389,19 @@ const WorkingWebcamWarp = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-neutral-800">
       <button
-        className="relative overflow-hidden rounded-full bg-neutral-600 text-white text-xl cursor-pointer mb-4 shadow-black shadow-2xl"
+        className="relative overflow-hidden rounded-full bg-neutral-600 text-white text-xl cursor-pointer mb-4 shadow-black shadow-2xl smooth-corners-lg"
         style={{
           width: "320px",
           height: "160px",
         }}
         onClick={() => alert("Warped button clicked!")}
       >
-        <video
-          ref={videoRef}
-          autoPlay
-          playsInline
-          muted
-          style={{ display: "none" }}
-        />
+        <video ref={videoRef} playsInline muted style={{ display: "none" }} />
 
         <canvas
           ref={canvas1Ref}
-          width={640} // Doubled
-          height={320} // Doubled
+          width={640}
+          height={320}
           style={{ display: "none" }}
         />
 
@@ -420,16 +421,16 @@ const WorkingWebcamWarp = () => {
 
         <canvas
           ref={outputCanvasRef}
-          width={640} // Higher resolution canvas
+          width={640}
           height={320}
           className="absolute top-0 left-0 w-full h-full transform scale-x-[-1]"
           style={{ objectFit: "fill" }}
         />
 
-        <div className="z-10 absolute top-2 left-2 rounded-full w-[304px] h-[144px] backdrop-blur-xl bg-neutral-900/40 blur-lg"></div>
+        <div className="z-10 absolute top-2 left-2 rounded-full w-[304px] h-[144px] backdrop-blur-md blur-lg"></div>
 
         <div
-          className="z-10 absolute inset-2 flex items-center justify-center rounded-full text-neutral-300"
+          className="z-10 absolute inset-2 flex items-center justify-center rounded-full text-neutral-300 drop-shadow-sm drop-shadow-black/50"
           style={{
             fontFamily: '"Instrument Serif", serif',
             fontSize: "48px",
