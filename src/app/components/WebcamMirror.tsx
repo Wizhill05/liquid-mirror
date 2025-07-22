@@ -19,8 +19,8 @@ const WorkingWebcamWarp = () => {
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         videoRef.current.onloadedmetadata = () => {
-          videoRef.current
-            .play()
+          videoRef
+            .current!.play()
             .then(() => {
               console.log("Video playback started");
               startWarpingLoop();
