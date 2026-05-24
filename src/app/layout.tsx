@@ -8,6 +8,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 const instrumentSerif = Instrument_Serif({
   weight: "400",
   subsets: ["latin"],
+  variable: "--font-instrument-serif",
 });
 
 const geistSans = Geist({
@@ -33,7 +34,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} antialiased`}
       >
         {children}
         <Analytics />
